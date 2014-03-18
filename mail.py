@@ -1,6 +1,18 @@
 import json
 from maillist import MailList
 
+def merge(list1, list2, name):
+
+    listi = MailList(name)
+    for item in list1:
+        listi.add_user(item.name, item.email)
+
+    for item in list2:
+        if not listi.search_email(item.email()):
+            listi.add_user(item.name, item.emial)
+
+    lists[len(lists) + 1] = listi
+
 def show_lists(lists):
     result = []
     for key in lists:
