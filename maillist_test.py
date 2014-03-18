@@ -39,5 +39,6 @@ class MailListTest(unittest.TestCase):
 
         check = 'plampetrova83@gmail.com'
         self.assertTrue(not self.maillist.search_email(check))
+
 if __name__ == '__main__':
     unittest.main()
