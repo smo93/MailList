@@ -21,3 +21,9 @@ class MailList():
             result.append(("[%d] %s - %s") % (index, item.name, item.email))
             index += 1
         return '\n'.join(result)
+
+    def search_email(self, email):
+        for item in self.users:
+            if email == item.email:
+                return True
+        return False
