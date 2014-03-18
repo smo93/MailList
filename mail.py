@@ -22,3 +22,10 @@ def add_new_user(lists, list_id, name, email):
         return False
     lists[list_id].add_user(name, email)
     return True
+
+def search_email(lists, email):
+    result = ['<{}> was found in:'.format(email)]
+    for key in lists:
+        if lists[key].search_email(email):
+            result.append('[{0}] - {1}'.format(key, lists[key].get_name()))
+    return '\n'.join(result)
