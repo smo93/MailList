@@ -1,7 +1,7 @@
 import json
 from maillist import MailList
 
-def merge(list1, list2, name):
+def merge(lists, list1, list2, name):
 
     listi = MailList(name)
     for item in list1:
@@ -41,6 +41,9 @@ def export(lists, list_id):
         print('List with unique identifier {} was not found!'.format(list_id))
         return False
     peio = json.dumps(lists[list_id].__dict__)
+    file = open(lists[list_id].get_name(), 'w')
+    file.write(peio)
+    file.close()
 
 def search_email(lists, email):
     result = ['<{}> was found in:'.format(email)]
@@ -98,12 +101,13 @@ def main():
             print(search_email(lists, command_tuple[1]))
         elif is_command(command_tuple, 'merge_lists'):
             list1, list2, new_list = command_tuple[1].split(' ')
-            pass
+            merge(lists, list1, list2, new_list)
         elif is_command(command_tuple, 'export'):
-            pass
+            export(lists, int(command_tuple[1]))
         elif is_command(command_tuple, 'exit'):
             break
         else:
             print('Unknown command!')
 
-
+if __name__ == '__main__':
+    main()
