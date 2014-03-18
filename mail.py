@@ -10,7 +10,7 @@ def show_lists(lists):
 
 def show_list(lists, list_id):
     if not list_id in lists:
-        print('List with unique identifier {} was not found!'.format(id))
+        print('List with unique identifier {} was not found!'.format(list_id))
         return False
     return lists[list_id].print_()
 
