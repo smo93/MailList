@@ -17,5 +17,14 @@ class MailListTest(unittest.TestCase):
         self.assertEqual(expected_user.take_name(), self.maillist.users[0].take_name())
         self.assertEqual(expected_user.take_email(), self.maillist.users[0].take_email())
 
+    def test_print_with_something_in_it(self):
+        self.maillist.add_user('Ivan', 'vanko98@asd.sd')
+        self.maillist.add_user('Peho', 'madafakajones90@gmail.com')
+
+        expected = '[1] Ivan - vanko98@asd.sd\n[2] Peho - madafakajones90@gmail.com'
+
+        self.assertEqual(expected, self.maillist.print_())
+
+
 if __name__ == '__main__':
     unittest.main()
