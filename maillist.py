@@ -13,3 +13,11 @@ class MailList():
     def add_user(self, user_name, user_email):
         new_user = User(user_name, user_email)
         self.users.append(new_user)
+
+    def print_(self):
+        result = []
+        index = 1
+        for item in self.users:
+            result.append(("[%d] %s - %s") % (index, item.name, item.email))
+            index += 1
+        return '\n'.join(result)
