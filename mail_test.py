@@ -32,7 +32,13 @@ class MailTest(unittest.TestCase):
 
     def test_add_new_user_in_non_existent_list(self):
         self.assertFalse(mail.add_new_user(self.lists, 4, 'a', 'b'))
-        
+
+    def test_search_email(self):
+        mail.add_new_user(self.lists, 1, 'ivan', 'dragan@petkan')
+        mail.add_new_user(self.lists, 2, 'ivan', 'dragan@petkan')
+        expected = '<dragan@petkan> was found in:\n'\
+                '[1] - list1\n[2] - list2'
+        self.assertEqual(expected, mail.search_email(self.lists, 'dragan@petkan'))
 
 if __name__ == '__main__':
     unittest.main()

@@ -29,3 +29,11 @@ def export(lists, list_id):
         print('List with unique identifier {} was not found!'.format(list_id))
         return False
     peio = json.dumps(lists[list_id].__dict__)
+
+def search_email(lists, email):
+    result = ['<{}> was found in:'.format(email)]
+    for key in lists:
+        if lists[key].search_email(email):
+            result.append('[{0}] - {1}'.format(key, lists[key].get_name()))
+    return '\n'.join(result)
+
