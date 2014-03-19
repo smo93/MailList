@@ -1,15 +1,23 @@
 import json
 from maillist import MailList
 
-def merge(lists, list1, list2, name):
+def merge(lists, list1_id, list2_id, name):
 
     listi = MailList(name)
-    for item in list1:
+    if not list1_id in lists:
+        print('List with unique identifier {} was not found!'.format(list1_id))
+        return
+
+    if not list2_id in lists:
+        print('List with unique identifier {} was not found!'.format(list2_id))
+        return
+
+    for item in lists[list1_id].users:
         listi.add_user(item.name, item.email)
 
-    for item in list2:
-        if not listi.search_email(item.email()):
-            listi.add_user(item.name, item.emial)
+    for item in lists[list2_id].users:
+        if not listi.search_email(item.email):
+            listi.add_user(item.name, item.email)
 
     lists[len(lists) + 1] = listi
 
@@ -100,8 +108,8 @@ def main():
         elif is_command(command_tuple, 'search_email'):
             print(search_email(lists, command_tuple[1]))
         elif is_command(command_tuple, 'merge_lists'):
-            list1, list2, new_list = command_tuple[1].split(' ')
-            merge(lists, list1, list2, new_list)
+            list1, list2, new_list = command_tuple[1:]
+            merge(lists, int(list1), int(list2), new_list)
         elif is_command(command_tuple, 'export'):
             export(lists, int(command_tuple[1]))
         elif is_command(command_tuple, 'exit'):
