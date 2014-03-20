@@ -1,6 +1,9 @@
 import unittest
 import mail
+import os
 from maillist import MailList
+from subprocess import call
+
 
 
 class MailTest(unittest.TestCase):
@@ -50,7 +53,26 @@ class MailTest(unittest.TestCase):
         mail.add_new_user(self.lists, 2, 'ivan', 'dragan@petkan')
         expected = '<dragan@petkan> was found in:\n'\
                 '[1] - list1\n[2] - list2'
-        self.assertEqual(expected, mail.search_email(self.lists, 'dragan@petkan'))
+        self.assertEqual(expected, mail.search_email(self.lists,
+            'dragan@petkan'))
+
+    def test_export_list_to_json(self):
+        mail.export(self.lists, 1)
+        expected = ['{"users": [], "name": "list1"}']
+        expected.append('{"name": "list1", "users": []}')
+        exp_file = open('list1.json', 'r')
+        actual = exp_file.read()
+        exp_file.close()
+        self.assertIn(actual, expected)
+        call('rm list1.json', shell=True)
+
+    def test_import_list_from_json(self):
+        call('echo -e \'{\"name\": \"list3\", \"users\":'\
+                '[{\"name\": \"asd\", \"email\": \"asd\"}]}\' > list3.json',
+                shell=True)
+        mail.import_json(self.lists, 'list3.json')
+        self.assertEqual('list3', self.lists[3].get_name())
+        call('rm list3.json', shell=True)
 
 if __name__ == '__main__':
     unittest.main()
