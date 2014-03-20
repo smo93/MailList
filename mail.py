@@ -13,6 +13,8 @@ def merge(list1, list2, name):
 
     lists[len(lists) + 1] = listi
 
+    print('Merged lists <{0}> and <{1}> into <{2}>'.format(list1.get_name(), list2.get_name(), listi.get_name()))
+
 def show_lists(lists):
     result = []
     for key in lists:
@@ -28,6 +30,7 @@ def show_list(lists, list_id):
 
 def create_list(lists, new_list):
     lists[len(lists) + 1] = MailList(new_list)
+    print('New list <{0}> was created!'.format(new_list))
 
 def add_new_user(lists, list_id, name, email):
     if not list_id in lists:
