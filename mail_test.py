@@ -67,12 +67,20 @@ class MailTest(unittest.TestCase):
         call('rm list1.json', shell=True)
 
     def test_import_list_from_json(self):
-        call('echo -e \'{\"name\": \"list3\", \"users\":'\
+        call('echo \'{\"name\": \"list3\", \"users\":'\
                 '[{\"name\": \"asd\", \"email\": \"asd\"}]}\' > list3.json',
                 shell=True)
         mail.import_json(self.lists, 'list3.json')
         self.assertEqual('list3', self.lists[3].get_name())
         call('rm list3.json', shell=True)
+
+    def test_remove_subscriber(self):
+        self.lists[1].add_user('ivan', 'dragan@petkan')
+        self.lists[1].add_user('georgi', 'georgipeev@gmail.com')
+        mail.remove_subscriber(self.lists, 1, 2)
+        self.assertEqual('[1] ivan - dragan@petkan', mail.show_list(self.lists, 1))
+
+
 
 
 
