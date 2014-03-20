@@ -5,11 +5,13 @@ def merge(lists, list1_id, list2_id, name):
 
     listi = MailList(name)
     if not list1_id in lists:
-        print('List with unique identifier {} was not found!'.format(list1_id))
+        print('List with unique identifier {} was not found!'\
+            .format(list1_id))
         return
 
     if not list2_id in lists:
-        print('List with unique identifier {} was not found!'.format(list2_id))
+        print('List with unique identifier {} was not found!'\
+            .format(list2_id))
         return
 
     for item in lists[list1_id].users:
@@ -21,7 +23,10 @@ def merge(lists, list1_id, list2_id, name):
 
     lists[len(lists) + 1] = listi
 
-    print('Merged lists <{0}> and <{1}> into <{2}>'.format(list1.get_name(), list2.get_name(), listi.get_name()))
+    print('Merged lists <{0}> and <{1}> into <{2}>'\
+        .format(lists[list1_id].get_name(), lists[list2_id].get_name(),
+         name))
+
 
 def show_lists(lists):
     result = []
@@ -46,6 +51,20 @@ def add_new_user(lists, list_id, name, email):
         return False
     lists[list_id].add_user(name, email)
     return True
+
+def update_subscriber (lists, unique_list_id, unique_name_id):
+    if not unique_list_id in lists:
+        print('List with unique indentifier {} was not found!'.format(uniqie_list_id))
+        return False
+    if unique_name_id >= len(lists[unique_list_id].users):
+        print('Subscriber with unique name indentifier {} was not found!'.format(unique_name_id))
+        return False
+
+    name = input('enter new name>')
+    email = input('enter new email>')
+
+    lists[unique_list_id].users[unique_name_id].update_subscriber(name, email)
+    print("Subscriber updated: {0} - {1}".format(lists[unique_list_id].users[unique_name_id].take_name(), lists[unique_list_id].users[unique_name_id].take_email()))
 
 def export(lists, list_id):
     if not list_id in lists:
