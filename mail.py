@@ -1,15 +1,23 @@
 import json
 from maillist import MailList
 
-def merge(list1, list2, name):
+def merge(lists, list1_id, list2_id, name):
 
     listi = MailList(name)
-    for item in list1:
+    if not list1_id in lists:
+        print('List with unique identifier {} was not found!'.format(list1_id))
+        return
+
+    if not list2_id in lists:
+        print('List with unique identifier {} was not found!'.format(list2_id))
+        return
+
+    for item in lists[list1_id].users:
         listi.add_user(item.name, item.email)
 
-    for item in list2:
-        if not listi.search_email(item.email()):
-            listi.add_user(item.name, item.emial)
+    for item in lists[list2_id].users:
+        if not listi.search_email(item.email):
+            listi.add_user(item.name, item.email)
 
     lists[len(lists) + 1] = listi
 
@@ -44,6 +52,9 @@ def export(lists, list_id):
         print('List with unique identifier {} was not found!'.format(list_id))
         return False
     peio = json.dumps(lists[list_id].__dict__)
+    file = open(lists[list_id].get_name(), 'w')
+    file.write(peio)
+    file.close()
 
 def search_email(lists, email):
     result = ['<{}> was found in:'.format(email)]
@@ -70,3 +81,44 @@ def create_help():
 "* exit - this will quit the program"]
 
     return "\n".join(helpi)
+
+def parse_command(command):
+    return tuple(command.split(' '))
+
+def is_command(command_tuple, command_string):
+    return command_tuple[0] == command_string
+
+def main():
+    lists = {}
+
+    print(create_menu())
+
+    while True:
+        command_tuple = parse_command(input('Enter command>'))
+
+        if is_command(command_tuple, 'help'):
+            print(create_help())
+        elif is_command(command_tuple, 'show_lists'):
+            print(show_lists(lists))
+        elif is_command(command_tuple, 'show_list'):
+            print(show_list(lists, int(command_tuple[1])))
+        elif is_command(command_tuple, 'add'):
+            name = input('name>')
+            email = input('email>')
+            add_new_user(lists, int(command_tuple[1]), name, email)
+        elif is_command(command_tuple, 'create'):
+            create_list(lists, command_tuple[1])
+        elif is_command(command_tuple, 'search_email'):
+            print(search_email(lists, command_tuple[1]))
+        elif is_command(command_tuple, 'merge_lists'):
+            list1, list2, new_list = command_tuple[1:]
+            merge(lists, int(list1), int(list2), new_list)
+        elif is_command(command_tuple, 'export'):
+            export(lists, int(command_tuple[1]))
+        elif is_command(command_tuple, 'exit'):
+            break
+        else:
+            print('Unknown command!')
+
+if __name__ == '__main__':
+    main()
