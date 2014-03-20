@@ -27,3 +27,10 @@ class MailList():
             if email == item.email:
                 return True
         return False
+
+    def search_name(self, name):
+        for item in self.users:
+            if name == item.name:
+                return True
+        return False
+

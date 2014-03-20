@@ -52,6 +52,8 @@ class MailTest(unittest.TestCase):
                 '[1] - list1\n[2] - list2'
         self.assertEqual(expected, mail.search_email(self.lists, 'dragan@petkan'))
 
+
+
 if __name__ == '__main__':
     unittest.main()
 
