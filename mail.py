@@ -67,6 +67,20 @@ def update_subscriber (lists, unique_list_id, unique_name_id):
     lists[unique_list_id].users[unique_name_id].update_subscriber(name, email)
     print("Subscriber updated: {0} - {1}".format(lists[unique_list_id].users[unique_name_id].take_name(), lists[unique_list_id].users[unique_name_id].take_email()))
 
+#remove_subscriber <unique_list_identifier> <unique_name_identifier> - \Removes the given subscriber from the given list
+def remove_subscriber (lists, unique_list_id, unique_name_id):
+    if not unique_list_id in lists:
+        print('List with unique indentifier {} was not found!'.format(uniqie_list_id))
+        return False
+    if unique_name_id > len(lists[unique_list_id].users):
+        print('Subscriber with unique name indentifier {} was not found!'.format(unique_name_id))
+        return False
+
+    lists[unique_list_id].users = lists[unique_list_id].\
+    users[:unique_name_id - 1] + lists[unique_list_id].\
+    users[unique_name_id:]
+
+
 def export(lists, list_id):
     if not list_id in lists:
         print('List with unique identifier {} was not found!'.format(list_id))
@@ -82,8 +96,9 @@ def import_json(lists, json_filename):
         json_data = json_f.read()
         json_f.close()
 
-        print('Creating maillist with name {}'.format(json_filename[:-5]))
-
+        print('Creating maillist with name {}'.\
+            format(json_filename[:-5]))
+        print(json_data)
         m_dict = json.loads(json_data)
         new_maillist = MailList(m_dict['name'])
         for user in m_dict['users']:
