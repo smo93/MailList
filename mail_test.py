@@ -74,6 +74,8 @@ class MailTest(unittest.TestCase):
         self.assertEqual('list3', self.lists[3].get_name())
         call('rm list3.json', shell=True)
 
+
+
 if __name__ == '__main__':
     unittest.main()
 

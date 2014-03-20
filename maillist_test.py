@@ -33,12 +33,27 @@ class MailListTest(unittest.TestCase):
         self.assertTrue(self.maillist.search_email(check))
 
 
-    def test_serach_emial_unavailable(self):
+    def test_serach_email_unavailable(self):
         self.maillist.add_user('Ivan', 'vanko98@asd.sd')
         self.maillist.add_user('Peho', 'madafakajones90@gmail.com')
 
         check = 'plampetrova83@gmail.com'
         self.assertTrue(not self.maillist.search_email(check))
+
+    def test_name_available(self):
+        self.maillist.add_user('Ivan', 'vanko98@asd.sd')
+        self.maillist.add_user('Peho', 'madafakajones90@gmail.com')
+
+        check = 'Peho'
+        self.assertTrue(self.maillist.search_name(check))
+
+    def test_name_unavailable(self):
+        self.maillist.add_user('Ivan', 'vanko98@asd.sd')
+        self.maillist.add_user('Peho', 'madafakajones90@gmail.com')
+
+        check = 'Georgi'
+        self.assertFalse(self.maillist.search_name(check))
+
 
 if __name__ == '__main__':
     unittest.main()
