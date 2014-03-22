@@ -6,7 +6,7 @@ from user import User
 class MailListTest(unittest.TestCase):
     """docstring for MailListTest"""
     def setUp(self):
-        self.maillist = MailList('new list')
+        self.maillist = MailList(1, 'new list')
 
     def test_get_name(self):
         self.assertEqual('new list', self.maillist.get_name())

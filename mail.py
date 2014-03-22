@@ -1,28 +1,18 @@
 import json
 import os
 from maillist import MailList
+from maillist_factory import MailListFactory
 
-def merge(lists, list1_id, list2_id, name):
+def merge(lists, factory, list1_id, list2_id, name):
+    listi = factory.create(name)
+    for l in lists:
+        if l.get_id() == list1_id or l.get_id() == list2_id:
+            for item in l.users:
+                if not listi.search_email(item.email):
+                    listi.add_user(item.name, item.email)
 
-    listi = MailList(name)
-    if not list1_id in lists:
-        print('List with unique identifier {} was not found!'\
-            .format(list1_id))
-        return
 
-    if not list2_id in lists:
-        print('List with unique identifier {} was not found!'\
-            .format(list2_id))
-        return
-
-    for item in lists[list1_id].users:
-        listi.add_user(item.name, item.email)
-
-    for item in lists[list2_id].users:
-        if not listi.search_email(item.email):
-            listi.add_user(item.name, item.email)
-
-    lists[len(lists) + 1] = listi
+    lists.append(listi)
 
     print('Merged lists <{0}> and <{1}> into <{2}>'\
         .format(lists[list1_id].get_name(), lists[list2_id].get_name(),
@@ -31,27 +21,29 @@ def merge(lists, list1_id, list2_id, name):
 
 def show_lists(lists):
     result = []
-    for key in lists:
-        result.append('[{0}] - {1}'.format(key, lists[key].get_name()))
+    for l in lists:
+        result.append('[{0}] - {1}'.format(l.get_id(), l.get_name()))
     result = sorted(result)
     return '\n'.join(result) + '\n'
 
 def show_list(lists, list_id):
-    if not list_id in lists:
-        print('List with unique identifier {} was not found!'.format(list_id))
-        return False
-    return lists[list_id].print_()
+    for l in lists:
+        if l.get_id() == list_id:
+            return l.print_()
 
-def create_list(lists, new_list):
-    lists[len(lists) + 1] = MailList(new_list)
+    return False
+
+def create_list(lists, m_factory, new_list):
+    lists.append(m_factory.create(new_list))
     print('New list <{0}> was created!'.format(new_list))
 
 def add_new_user(lists, list_id, name, email):
-    if not list_id in lists:
-        print('List with unique identifier {} was not found!'.format(list_id))
-        return False
-    lists[list_id].add_user(name, email)
-    return True
+    for i in range(len(lists)):
+        if lists[i].get_id() == list_id:
+            lists[i].add_user(name, email)
+            return True
+    print('List with unique identifier {} was not found!'.format(list_id))
+    return False
 
 def update_subscriber (lists, unique_list_id, unique_name_id):
     if not unique_list_id in lists:
@@ -68,17 +60,17 @@ def update_subscriber (lists, unique_list_id, unique_name_id):
     print("Subscriber updated: {0} - {1}".format(lists[unique_list_id].users[unique_name_id].take_name(), lists[unique_list_id].users[unique_name_id].take_email()))
 
 #remove_subscriber <unique_list_identifier> <unique_name_identifier> - \Removes the given subscriber from the given list
-def remove_subscriber (lists, unique_list_id, unique_name_id):
-    if not unique_list_id in lists:
-        print('List with unique indentifier {} was not found!'.format(uniqie_list_id))
-        return False
-    if unique_name_id > len(lists[unique_list_id].users):
-        print('Subscriber with unique name indentifier {} was not found!'.format(unique_name_id))
-        return False
-
-    lists[unique_list_id].users = lists[unique_list_id].\
-    users[:unique_name_id - 1] + lists[unique_list_id].\
-    users[unique_name_id:]
+def remove_subscriber(lists, unique_list_id, unique_name_id):
+    for i in range(len(lists)):
+        if lists[i].get_id() == unique_list_id:
+            if not unique_name_id > len(lists[i].users):
+                lists[i].users = lists[i].users[:unique_name_id - 1] +\
+                    lists[i].users[unique_name_id:]
+            else:
+                print('Subscriber with unique name indentifier {} was not found!'\
+                        .format(unique_name_id))
+    print('List with unique indentifier {} was not found!'.format(unique_list_id))
+    return False
 
 
 def export(lists, list_id):
@@ -111,9 +103,9 @@ def import_json(lists, json_filename):
 
 def search_email(lists, email):
     result = ['<{}> was found in:'.format(email)]
-    for key in lists:
-        if lists[key].search_email(email):
-            result.append('[{0}] - {1}'.format(key, lists[key].get_name()))
+    for l in lists:
+        if l.search_email(email):
+            result.append('[{0}] - {1}'.format(l.get_id(), l.get_name()))
     return '\n'.join(result)
 
 def create_menu():
@@ -142,7 +134,8 @@ def is_command(command_tuple, command_string):
     return command_tuple[0] == command_string
 
 def main():
-    lists = {}
+    lists = []
+    factory = MailListFactory()
 
     print(create_menu())
 
@@ -160,12 +153,12 @@ def main():
             email = input('email>')
             add_new_user(lists, int(command_tuple[1]), name, email)
         elif is_command(command_tuple, 'create'):
-            create_list(lists, command_tuple[1])
+            create_list(lists, factory, command_tuple[1])
         elif is_command(command_tuple, 'search_email'):
             print(search_email(lists, command_tuple[1]))
         elif is_command(command_tuple, 'merge_lists'):
             list1, list2, new_list = command_tuple[1:]
-            merge(lists, int(list1), int(list2), new_list)
+            merge(lists, factory, int(list1), int(list2), new_list)
         elif is_command(command_tuple, 'export'):
             export(lists, int(command_tuple[1]))
         elif is_command(command_tuple, 'exit'):

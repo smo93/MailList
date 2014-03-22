@@ -3,12 +3,16 @@ from user import User
 
 class MailList():
     """docstring for MailList"""
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, list_id, name):
+        self.__id = list_id
+        self.__name = name
         self.users = []
 
+    def get_id(self):
+        return self.__id
+
     def get_name(self):
-        return self.name
+        return self.__name
 
     def add_user(self, user_name, user_email):
         new_user = User(user_name, user_email)
@@ -18,7 +22,7 @@ class MailList():
         result = []
         index = 1
         for item in self.users:
-            result.append(("[%d] %s - %s") % (index, item.name, item.email))
+            result.append('[{0}] {1} - {2}'.format(index, item.name, item.email))
             index += 1
         return '\n'.join(result)
 
