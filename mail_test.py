@@ -58,11 +58,15 @@ class MailTest(unittest.TestCase):
                 '[1] - list1\n[2] - list2'
         self.assertEqual(expected, mail.search_email(self.lists,
             'dragan@petkan'))
-    """
-   def test_export_list_to_json(self):
+
+    def test_export_list_to_json(self):
         mail.export(self.lists, 1)
-        expected = ['{"users": [], "name": "list1"}']
-        expected.append('{"name": "list1", "users": []}')
+        expected = ['{"_MailList__id": 1, "_MailList__name": "list1", "users": []}',
+                    '{"_MailList__id": 1, "users": [], "_MailList__name": "list1"}',
+                    '{"_MailList__name": "list1", "_MailList__id": 1, "users": []}',
+                    '{"_MailList__name": "list1", "users": [], "_MailList__id": 1}',
+                    '{"users": [], "_MailList__name": "list1", "_MailList__id": 1}',
+                    '{"users": [], "_MailList__id": 1, "_MailList__name": "list1"}']
         exp_file = open('list1.json', 'r')
         actual = exp_file.read()
         exp_file.close()
@@ -73,10 +77,9 @@ class MailTest(unittest.TestCase):
         call('echo \'{\"name\": \"list3\", \"users\":'\
                 '[{\"name\": \"asd\", \"email\": \"asd\"}]}\' > list3.json',
                 shell=True)
-        mail.import_json(self.lists, 'list3.json')
-        self.assertEqual('list3', self.lists[3].get_name())
+        mail.import_json(self.lists, self.factory, 'list3.json')
+        self.assertEqual('list3', self.lists[2].get_name())
         call('rm list3.json', shell=True)
-    """
 
     def test_remove_subscriber(self):
         self.lists[0].add_user('ivan', 'dragan@petkan')

@@ -74,29 +74,28 @@ def remove_subscriber(lists, unique_list_id, unique_name_id):
 
 
 def export(lists, list_id):
-    if not list_id in lists:
-        print('List with unique identifier {} was not found!'.format(list_id))
-        return False
-    peio = json.dumps(lists[list_id].__dict__)
-    file = open(lists[list_id].get_name() + '.json', 'w')
-    file.write(peio)
-    file.close()
+    for l in lists:
+        if l.get_id() == list_id:
+            json_data = json.dumps(l.__dict__)
+            file_to_save = open('{}.json'.format(l.get_name()), 'w')
+            file_to_save.write(json_data)
+            file_to_save.close()
+    print('List with unique identifier {} was not found!'.format(list_id))
+    return False
 
-def import_json(lists, json_filename):
+def import_json(lists, factory, json_filename):
     if os.path.isfile(json_filename):
         json_f = open(json_filename, 'r')
         json_data = json_f.read()
         json_f.close()
 
-        print('Creating maillist with name {}'.\
-            format(json_filename[:-5]))
-        print(json_data)
+        print('Creating maillist with name {}'.format(json_filename[:-5]))
         m_dict = json.loads(json_data)
-        new_maillist = MailList(m_dict['name'])
+        new_maillist = factory.create(m_dict['name'])
         for user in m_dict['users']:
             new_maillist.add_user(user['name'], user['email'])
 
-        lists[len(lists) + 1] = new_maillist
+        lists.append(new_maillist)
 
     else:
         print('{} doesn\'t exist'.format(json_filename))
